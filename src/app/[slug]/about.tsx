@@ -53,7 +53,7 @@ export default function About() {
               </div>
             </div>
             <div className="mt-10">
-              Built by Jeff Chien on Next.js, React.js, and TailwindCSS.
+              Built by Jeff Chien on Next.js, React.js, and TailwindCSS in 5 hours. See <a className="text-blue-900 underline" href="https://github.com/jeffychien/yomidle" target="_blank">https://github.com/jeffychien/yomidle</a> for the code.
             </div>
           </div>
         </div>
