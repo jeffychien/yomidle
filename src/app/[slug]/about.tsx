@@ -2,27 +2,27 @@
 
 import { useState } from 'react';
 
-export default function About({dateUnix} : {dateUnix : number}) {
+export default function About() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <div>
       <div>
-        <a href="#" onClick={e => setIsModalOpen(!isModalOpen)}>About | これについて</a>
+        <a href="#" onClick={() => setIsModalOpen(!isModalOpen)}>About | これについて</a>
       </div>
       <div className={"fixed top-0 left-0 w-full h-full transition-opacity duration-[500ms] " + (isModalOpen ? "opacity-100" : "opacity-0 pointer-events-none")}>
         <div className="absolute top-0 left-0 w-full h-full bg-black opacity-80" />
 
         <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center animate-[wiggle_1s_ease-in-out_infinite]"
-            onClick={e => setIsModalOpen(false)}>
+            onClick={() => setIsModalOpen(false)}>
           <div className="rounded-sm bg-green-700 p-3 z-10" onClick={e => e.stopPropagation()}>
             <div className="text-right font-bold">
-              <a href="#" onClick={e => setIsModalOpen(false)}>
+              <a href="#" onClick={() => setIsModalOpen(false)}>
                 X
               </a>
             </div>
             <div className="flex items-center justify-center">
               <div className="m-3 w-100">
-                <h2 className="text-xl">What's Yomidle?</h2>
+                <h2 className="text-xl">What&apos;s Yomidle?</h2>
                 <p>
                   Yomidle is a game for guessing the reading of common kanji phrases, or jukugo. Guess 3 in a row, column, or diagonal to win!
                   <br/>

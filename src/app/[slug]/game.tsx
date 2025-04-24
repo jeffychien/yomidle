@@ -1,6 +1,6 @@
 'use client';
  
-import { FormEvent, useEffect, useRef, useState } from 'react';
+import { FormEvent, useRef, useState } from 'react';
  
 enum CellState {
   UNANSWERED,
@@ -76,24 +76,24 @@ export default function Game({date, words} : { date : string, words : Word[] }) 
   const [gameState, setGameState] = useState(getGameState(cells));
 
   const mutateCell = (index : number, fn: (cell : Cell) => Cell) => {
-    let newCells = [...cells];
-    let newCell = fn({...newCells[index]});
+    const newCells = [...cells];
+    const newCell = fn({...newCells[index]});
     newCells[index] = newCell;
     return newCells;
   };
 
   // Used for changing focus to the next unanswered cell.
-  const inputRefs = words.map(() => useRef<HTMLInputElement>(null));
+  const inputRefs = useRef(words.map(() => null) as (HTMLInputElement | null)[]);
   const focusOnNextUnansweredCell = (newCells : Cell[], index : number) => {
     for(let i = index + 1; i < newCells.length; i++) {
       if (newCells[i].state === CellState.UNANSWERED) {
-        inputRefs[i].current?.focus();
+        inputRefs.current[i]?.focus();
         return;
       }
     }
     for(let i = 0 ; i < index; i++) {
       if (newCells[i].state === CellState.UNANSWERED) {
-        inputRefs[i].current?.focus();
+        inputRefs.current[i]?.focus();
         return;
       }
     }
@@ -148,7 +148,7 @@ export default function Game({date, words} : { date : string, words : Word[] }) 
               {cell.state == CellState.UNANSWERED &&
                 <form onSubmit={e => checkWord(e, index)}>
                   <input type="text"
-                    ref={inputRefs[index]}
+                    ref={(element) => { inputRefs.current[index] = element }}
                     value={cell.answer}
                     onChange={e => changeAnswer(index, e.target.value)}
                     className="text-black bg-white mt-4 mb-3"
