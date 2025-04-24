@@ -12,7 +12,7 @@ import timezone from 'dayjs/plugin/timezone';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-export default async function Home({
+export default async function Puzzle({
   params,
 }: {
   params: Promise<{ slug: string }>
