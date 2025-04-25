@@ -26,6 +26,18 @@ type Cell = {
   alternativeYomis: string[];
 };
 
+const checkCellAnswer =  (cell : Cell) => {
+  const normalized = cell.answer.trim().toLowerCase();
+  const answerIndex = cell.word.yomis.indexOf(normalized);
+  cell.state = answerIndex !== -1 ? CellState.CORRECT : CellState.INCORRECT;
+  if (answerIndex !== -1) {
+    cell.alternativeYomis = cell.word.yomis.filter((_, index) => index !== answerIndex);
+  } else {
+    cell.alternativeYomis = [];
+  }
+  return cell;
+};
+
 const RowsColumnsAndDiagonals = [
   [0, 1, 2],
   [3, 4, 5],
@@ -41,7 +53,16 @@ export default function Game({date, words} : { date : string, words : Word[] }) 
   const savedCells = localStorage.getItem(date);
   const [cells, setCells] = useState(
     savedCells
-      ? JSON.parse(savedCells) as Cell[]
+      ? (JSON.parse(savedCells) as Cell[]).map((cell, index) => {
+        cell.word = words[index];
+        if (cell.state === CellState.UNANSWERED) {
+          return cell;
+        }
+        // Recheck answer in case it changed.
+        // In an ideal world, this reprocessing really should be controlled
+        // by some version on words.json.
+        return checkCellAnswer(cell);
+      })
       : words.map((word) => ({
         word,
         answer: "",
@@ -99,15 +120,7 @@ export default function Game({date, words} : { date : string, words : Word[] }) 
     }
   };
   const checkWord = (e : FormEvent, index : number) => {
-    const newCells = mutateCell(index, (cell) => {
-      const normalized = cell.answer.trim().toLowerCase();
-      const answerIndex = cell.word.yomis.indexOf(normalized);
-      cell.state = answerIndex !== -1 ? CellState.CORRECT : CellState.INCORRECT;
-      if (answerIndex !== -1) {
-        cell.alternativeYomis = cell.word.yomis.filter((_, index) => index !== answerIndex);
-      }
-      return cell;
-    });
+    const newCells = mutateCell(index, checkCellAnswer);
     setCells(newCells);
     checkGameState(newCells);
     focusOnNextUnansweredCell(newCells, index);
